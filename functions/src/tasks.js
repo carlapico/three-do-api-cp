@@ -23,6 +23,7 @@ export async function createTask (req,res) { // later we will add userID and tim
     await db.collection('tasks').add(newTask)
         .catch(err => res.status(500).send(err))
     res.status(201).send ({success:true, message:'Task Added'})
+    getTasks(req, res) // send back the full list of tasks.. 
 }
 
 export function updateTask (req,res) {
