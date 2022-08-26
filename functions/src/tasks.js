@@ -1,6 +1,6 @@
 import dbConnect from "./dbConnect"
 
-export async function getTasks (req, res) {
+export async function getTasks (req, res) { // we are going to later add "by user id" to this...
     const db = dbConnect()
     const collection = await db.collection('tasks').get()
         .catch (err => res.status(500).send(err))
@@ -13,9 +13,16 @@ export async function getTasks (req, res) {
     res.send (tasks)
 }
 
-export function createTask (req,res) {
+export async function createTask (req,res) { // later we will add userID and timestamp...
     const newTask = req.body 
-    res.status(201).send ("Task Added")
+    if (!newTask || !newTask.task) {
+        res.status(400).send({success:false, message: 'Invalid request'})
+        return
+    }
+    const db = dbConnect()
+    await db.collection('tasks').add(newTask)
+        .catch(err => res.status(500).send(err))
+    res.status(201).send ({success:true, message:'Task Added'})
 }
 
 export function updateTask (req,res) {
